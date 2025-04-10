@@ -808,6 +808,9 @@ class FrustrationCalculator:
             else pdb.atom[pdb.atom["ATOM"] == "ATOM"]["chain"].unique()
         )
 
+        logger.debug(f"Chains to analyze: {chains_to_analyze}")
+        
+        
         for chain_id in chains_to_analyze:
             residues_analyzed[chain_id] = []
             chain_residues = (
@@ -827,14 +830,16 @@ class FrustrationCalculator:
                         split=True,
                         method="threading",
                     )
-                    plot_key = f"delta_frus_res{res}_chain{chain_id}"
-                    self.plots[plot_key] = plot_delta_frus(
-                        pdb=pdb,
-                        res_num=res,
-                        chain=chain_id,
-                        method="threading",
-                        save=True,
-                    )
+                    
+                    if self.visualization:
+                        plot_key = f"delta_frus_res{res}_chain{chain_id}"
+                        self.plots[plot_key] = plot_delta_frus(
+                            pdb=pdb,
+                            res_num=res,
+                            chain=chain_id,
+                            method="threading",
+                            save=True,
+                        )
                 except Exception as e:
                     logger.error(
                         f"Failed to analyze residue {res} chain {chain_id}: {str(e)}"
